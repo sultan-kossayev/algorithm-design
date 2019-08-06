@@ -1,20 +1,19 @@
 package structures;
 
 /**
- * The parent class for all implementations of types of ˚data structure
+ * The parent interface for all data structures
  *
  * @param <T> element the structure holds
  */
 public interface DataStructure<T> {
 
 	/**
-	* Checks whether the structure is empty
+	* Checks whether the data structure is empty
 	*/
 	boolean isEmpty();
 
 	/**
-	* Returns the size of the structure i.e.
-	* how many elements the structure right now contains
+	* Returns the size of the data structure
 	*/
 	int size();
 }
