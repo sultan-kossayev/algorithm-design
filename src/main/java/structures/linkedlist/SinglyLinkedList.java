@@ -11,32 +11,70 @@ public class SinglyLinkedList<T> implements LinkedList<T> {
     private int size;
 
     /**
-     * The reference to the head of the list
+     * The reference to the head (first element) of the list
      */
     private Node head;
 
     /**
-     * The reference to the tail of the list
+     * The reference to the tail (last element) of the list
      */
     private Node tail;
 
     @Override
     public void addFirst(T element) {
         Node n = new Node(element);
-        head = n;
-        tail = n;
+
+        if (head != null) {
+            n.next = head;
+            head = n;
+        } else {
+            head = n;
+            tail = n;
+        }
+
+        size++;
+    }
+
+    @Override
+    public void addLast(T element) {
+        Node n = new Node(element);
+        if (tail != null) {
+            tail.next = n;
+            tail = n;
+        } else {
+            head = n;
+            tail = n;
+        }
 
         size++;
     }
 
     @Override
     public T getFirst() {
-        return (T) head.value;
+        return head == null ? null : (T) head.value;
     }
 
     @Override
     public T getLast() {
-        return (T) tail.value;
+        return tail == null ? null : (T) tail.value;
+    }
+
+    @Override
+    public T removeFirst() {
+        T value = null;
+        if (head != null) {
+            value = (T) head.value;
+            head = head.next;
+            tail = head == null ? null : tail;
+            size--;
+        }
+
+        return value;
+    }
+
+    @Override
+    public T removeLast() {
+        throw new UnsupportedOperationException("This is operation is not supported. Use doubly linked list instead");
     }
 
     @Override
