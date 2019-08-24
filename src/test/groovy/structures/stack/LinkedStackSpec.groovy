@@ -60,5 +60,7 @@ class LinkedStackSpec extends Specification {
         stack.top() == 10
         stack.pop() == 10
         stack.size() == 0
+        stack.pop() == null
+        stack.top() == null
     }
 }
