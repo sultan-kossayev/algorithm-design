@@ -5,7 +5,7 @@ import structures.DataStructure;
 /**
  * Interface of linked list data structure
  */
-public interface LinkedList<T> extends DataStructure<T> {
+public interface LinkedList<T> extends DataStructure {
 
     /**
      * Adds an element to the beginning of the linked list

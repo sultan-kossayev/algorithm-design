@@ -2,10 +2,8 @@ package structures;
 
 /**
  * The parent interface for all data structures
- *
- * @param <T> element the structure holds
  */
-public interface DataStructure<T> {
+public interface DataStructure {
 
 	/**
 	* Checks whether the data structure is empty

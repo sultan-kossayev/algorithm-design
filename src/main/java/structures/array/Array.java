@@ -5,7 +5,7 @@ import structures.DataStructure;
 /**
  * Array data structure
  */
-public interface Array<T> extends DataStructure<T> {
+public interface Array<T> extends DataStructure {
 
     /**
      * Adds the element to the end of the array
