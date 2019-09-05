@@ -24,13 +24,13 @@ public class SinglyLinkedList<T> implements LinkedList<T> {
     public void addFirst(T element) {
         Node n = new Node(element);
 
-        if (head != null) {
-            n.next = head;
-            head = n;
-        } else {
-            head = n;
+        if (head == null) {
             tail = n;
+        } else {
+            n.next = head;
         }
+
+        head = n;
 
         size++;
     }
@@ -38,13 +38,14 @@ public class SinglyLinkedList<T> implements LinkedList<T> {
     @Override
     public void addLast(T element) {
         Node n = new Node(element);
-        if (tail != null) {
-            tail.next = n;
-            tail = n;
-        } else {
+
+        if (tail == null) {
             head = n;
-            tail = n;
+        } else {
+            tail.next = n;
         }
+
+        tail = n;
 
         size++;
     }
