@@ -139,6 +139,4 @@ class HashMapSpec extends Specification {
         hashMap.get(2) == "two"
         hashMap.get(3) == "three"
     }
-
-    // test resize when an item is removed
 }
