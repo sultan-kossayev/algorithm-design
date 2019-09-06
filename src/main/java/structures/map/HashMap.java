@@ -77,15 +77,15 @@ public class HashMap<K, V> implements Map<K, V> {
         int hash = hash(key);
         int idx = indexForHash(hash);
 
-        Node<K, V> curr = buckets[idx];
         V oldVal = null;
-        if (curr == null) {
+        if (buckets[idx] == null) {
             buckets[idx] = new Node<>(key, value, hash);
             size++;
             resizeIfNeeded();
 
             return null;
         } else {
+            Node<K, V> curr = buckets[idx];
             while(curr != null) {
                 if (curr.key.equals(key)) {
                     oldVal = curr.value;
