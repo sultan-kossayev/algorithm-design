@@ -1,11 +1,11 @@
 package structures.array;
 
-import structures.DataStructure;
+import structures.IterableStructure;
 
 /**
  * Array data structure
  */
-public interface Array<T> extends DataStructure {
+public interface Array<T> extends IterableStructure<T> {
 
     /**
      * Adds the element to the end of the array

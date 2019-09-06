@@ -1,5 +1,8 @@
 package structures.array;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * The implementation of the fixed size array
  */
@@ -77,5 +80,31 @@ public class FixedSizeArray<T> implements Array<T> {
     @Override
     public int size() {
         return count;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new LasyIteratorImpl();
+    }
+
+    // todo next improvement
+    // implement remove() and check for modification during iteration
+    private class LasyIteratorImpl<T> implements Iterator<T> {
+
+        int cursor;
+
+        @Override
+        public boolean hasNext() {
+            return cursor < count;
+        }
+
+        @Override
+        public T next() {
+            if (cursor == count) {
+                throw new NoSuchElementException();
+            }
+
+            return (T) array[cursor++];
+        }
     }
 }
