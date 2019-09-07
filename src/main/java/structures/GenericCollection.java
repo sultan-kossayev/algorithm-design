@@ -1,7 +1,7 @@
 package structures;
 
 /**
- * Generic interface for all "one-dimensional" collections
+ * Generic interface for all "one-dimensional" data structures
  *
  * @param <T> type of the data
  */
