@@ -2,6 +2,7 @@ package structures.tree;
 
 import structures.DataStructure;
 import structures.IterableStructure;
+import structures.tree.traversal.TreeTraversal;
 
 /**
  * An interface for tree data structure
@@ -45,6 +46,14 @@ public interface Tree<T> extends DataStructure {
      * @return
      */
     IterableStructure<Node<T>> childrenOf(Node<T> parent);
+
+    /**
+     * Returns all nodes of the tree in specified order
+     *
+     * @param using order in which the nodes has to be returned
+     * @return all nodes or empty collection
+     */
+    IterableStructure<Node<T>> nodes(TreeTraversal<T> using);
 
     /**
      * An interface for tree' node

@@ -70,6 +70,11 @@ class InOrderTraversalSpec extends Specification {
             }
 
             @Override
+            IterableStructure<Tree.Node> nodes(TreeTraversal using) {
+                return null
+            }
+
+            @Override
             boolean isEmpty() {
                 return false
             }

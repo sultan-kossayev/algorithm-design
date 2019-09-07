@@ -2,6 +2,7 @@ package structures.tree
 
 import spock.lang.Specification
 import spock.lang.Subject
+import structures.tree.traversal.InOrderTraversal
 
 class LinkedBinaryTreeSpec extends Specification {
 
@@ -124,6 +125,34 @@ class LinkedBinaryTreeSpec extends Specification {
         children.size() == 2
         children.every {
             it.element() == arr[i++]
+        }
+    }
+
+    def "given a tree with the root and its 1 child then check how many children are returned"() {
+        given:
+        def p = tree.addRoot(10)
+        tree.addLeft(p, 11)
+        when:
+        def children = tree.childrenOf(p)
+        then:
+        children.size() == 1
+        children.iterator().next().element() == 11
+    }
+
+    def "given a tree get its all nodes"() {
+        given:
+        def root = tree.addRoot(10)
+        def l1 = tree.addLeft(root, 11)
+        tree.addLeft(l1, 12)
+        tree.addRight(l1, 13)
+        def order = [12, 11, 13, 10]
+        def i = 0
+        when:
+        def nodes = tree.nodes(new InOrderTraversal())
+        then:
+        nodes.size() == 4
+        nodes.every {
+            it.element() == order[i++]
         }
     }
 }

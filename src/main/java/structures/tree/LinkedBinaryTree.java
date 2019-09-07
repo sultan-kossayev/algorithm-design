@@ -2,6 +2,7 @@ package structures.tree;
 
 import structures.IterableStructure;
 import structures.array.FixedSizeArray;
+import structures.tree.traversal.TreeTraversal;
 
 /**
  * An implementation of the binary tree based on linked list
@@ -101,10 +102,19 @@ public class LinkedBinaryTree<T> implements BinaryTree<T> {
         LinkedNode<T> p = wrap(parent);
 
         FixedSizeArray array = new FixedSizeArray(2);
-        array.append(p.left);
-        array.append(p.right);
+        if (p.left != null) {
+            array.append(p.left);
+        }
+        if (p.right != null) {
+            array.append(p.right);
+        }
 
         return array;
+    }
+
+    @Override
+    public IterableStructure<Node<T>> nodes(TreeTraversal<T> using) {
+        return using.traverse(this);
     }
 
     @Override
