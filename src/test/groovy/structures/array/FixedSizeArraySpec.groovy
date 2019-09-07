@@ -19,8 +19,9 @@ class FixedSizeArraySpec extends Specification {
         def element = 1
         when:
         array.append(element)
+        array.add(element)
         then:
-        array.size() == 1
+        array.size() == 2
     }
 
     def "given the element insert it by index to the array"() {

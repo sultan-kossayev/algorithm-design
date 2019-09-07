@@ -31,6 +31,11 @@ public class FixedSizeArray<T> implements Array<T> {
     }
 
     @Override
+    public void add(T element) {
+        append(element);
+    }
+
+    @Override
     public void insertTo(int index, T element) {
         if (count == array.length) {
             throw new IllegalStateException("The array is already full");
