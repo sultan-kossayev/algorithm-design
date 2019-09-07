@@ -24,7 +24,7 @@ class PreOrderTraversalSpec extends Specification {
 
     def "given a tree check traversal order"() {
         given:
-        def order = ["root", "root-left", "root-left-left", "root-left-right", "root-right", "root-right-left", "root-right-right1"]
+        def order = ["root", "root-left", "root-left-left", "root-left-right", "root-right", "root-right-left", "root-right-right"]
         def i = 0
         when:
         def nodes = preOrder.traverse(tree)
