@@ -52,7 +52,11 @@ public class DepthFirstSearch {
     }
 
     /**
-     * Iterative approach using stack
+     * Iterative approach using stack.
+     *
+     * Note, there is an another way to implement iterative algorithm using stack
+     * where we allow the stack to contain duplicate values. However, with that approach it is not easy
+     * to process the vertex after all its adjacent vertices have been processed.
      */
     public List<Integer> iterativeTraversal(Graph g) {
         boolean[] discovered = new boolean[g.numberOfVertices()];
