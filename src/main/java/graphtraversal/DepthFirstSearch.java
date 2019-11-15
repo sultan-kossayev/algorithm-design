@@ -8,9 +8,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Depth-first search of graph in 2 ways:
+ * Two implementations of depth-first search on a graph:
  * 1) recursive. Time O(V+E), Space O(V)
  * 2) iterative. Time O(V+E), Space O(V)
+ *
+ * Both implementations return a list of vertices in order that they have been discovered
  */
 public class DepthFirstSearch {
 
@@ -20,10 +22,14 @@ public class DepthFirstSearch {
     public List<Integer> recursiveTraversal(Graph g) {
         boolean[] discovered = new boolean[g.numberOfVertices()];
 
-        List<Integer> res = new ArrayList<>(); // this is only needed for test cases
+        List<Integer> res = new ArrayList<>(); // keeps vertices in discovered
 
         for (int v : g.vertices()) {
             if (!discovered[v]) {
+                // discover the vertex v
+                discovered[v] = true;
+                res.add(v);
+                // go and process the vertex v
                 recursive(g, v, discovered, res);
             }
         }
@@ -32,8 +38,6 @@ public class DepthFirstSearch {
     }
 
     private void recursive(Graph g, int v, boolean[] discovered, List<Integer> res) {
-        // discover the vertex v
-        discovered[v] = true;
         // process the vertex v early
         res.add(v);
 
@@ -41,7 +45,10 @@ public class DepthFirstSearch {
             if (!discovered[u]) {
                 // process (v,u) edge
 
-                // go discover the vertex u
+                // discover the vertex v
+                discovered[u] = true;
+
+                // go and process the vertex u
                 recursive(g, u, discovered, res);
             }
             // else if the vertex u is not processed OR the graph is directed then also process (v, u) edge
@@ -67,32 +74,38 @@ public class DepthFirstSearch {
 
         for (int x : g.vertices()) {
             if (!discovered[x]) {
+                // discover the vertex x
+                discovered[x] = true;
+
+                // go and process the vertex x
                 stack.push(x);
 
                 while (!stack.isEmpty()) {
                     int v = stack.peek();
 
                     if (!discovered[v]) {
-                        // discover the vertex v
-                        discovered[v] = true;
                         // process the vertex v early
                         res.add(v);
                     }
 
-                    boolean allDiscovered = true;
+                    boolean allAdjacentProcessed = true;
                     for (int u : g.adj(v)) {
                         if (!discovered[u]) {
                             // process the edge (v, u)
 
-                            // go discover the vertex u
+                            // discover the vertex v
+                            discovered[v] = true;
+
+                            // go and process  the vertex u
                             stack.push(u);
-                            allDiscovered = false;
+
+                            allAdjacentProcessed = false;
                             break;
                         }
                         // else if the vertex u is not processed OR the graph is directed then also process the edge (v, u)
                     }
 
-                    if (allDiscovered) {
+                    if (allAdjacentProcessed) {
                         // process the vertex v late
 
                         // mark the vertex as processed
