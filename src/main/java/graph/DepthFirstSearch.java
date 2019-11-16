@@ -1,4 +1,4 @@
-package graphtraversal;
+package graph;
 
 import utils.Graph;
 
