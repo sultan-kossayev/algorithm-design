@@ -11,8 +11,22 @@ class BreadthFirstSearchSpec extends Specification {
 
     def "traverse an undirected graph"() {
         given:
-        def undirected = new Graph((int[][]) [[1, 2], [0, 3], [0, 3], [1, 2, 4], [3]])
+        def undirected = new Graph((int[][]) [[2, 4], [3, 4], [0, 3, 4], [1, 2], [0, 1, 2]])
         expect:
-        bfs.search(undirected) == [0, 1, 2, 3, 4]
+        bfs.search(undirected) == [0, 2, 4, 3, 1]
+    }
+
+    def "traverse a directed graph"() {
+        given:
+        def directed = new Graph((int[][]) [[1, 3], [2, 5], [4, 5], [2], [5], []])
+        expect:
+        bfs.search(directed) == [0, 1, 3, 2, 5, 4]
+    }
+
+    def "traverse a not connected graph"() {
+        given:
+        def notconnected = new Graph((int[][]) [[1, 3], [0, 2, 3], [1, 3], [0, 1, 2], [5], [4]])
+        expect:
+        bfs.search(notconnected) == [0, 1, 3, 2, 4, 5]
     }
 }
