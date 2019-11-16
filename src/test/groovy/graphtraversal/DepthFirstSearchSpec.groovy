@@ -6,6 +6,12 @@ import utils.Graph
 
 class DepthFirstSearchSpec extends Specification {
 
+    // vertices in discovered order
+    static DISCOVERED = 0
+
+    // vertices in processed order
+    static PROCESSED = 1
+
     @Subject
     def dfs = new DepthFirstSearch()
 
@@ -13,23 +19,38 @@ class DepthFirstSearchSpec extends Specification {
         given:
         def undirected = new Graph((int[][]) [[1, 2], [0, 3], [0, 3], [1, 2, 4], [3]])
         expect:
-        dfs.recursiveTraversal(undirected) == [0, 1, 3, 2, 4]
-        dfs.iterativeTraversal(undirected) == [0, 1, 3, 2, 4]
+        dfs.recursive(undirected)[DISCOVERED] == [0, 1, 3, 2, 4]
+        dfs.recursive(undirected)[PROCESSED] == [2, 4, 3, 1, 0]
+
+        dfs.iterative(undirected)[DISCOVERED] == [0, 1, 3, 2, 4]
+        dfs.iterative(undirected)[PROCESSED] == [2, 4, 3, 1, 0]
+
+        dfs.iterative2(undirected)[DISCOVERED] == [0, 1, 2, 3, 4]
     }
 
     def "traverse a directed graph using dfs"() {
         given:
         def directed = new Graph((int[][]) [[1, 3], [2, 5], [4, 5], [2], [5], []])
         expect:
-        dfs.recursiveTraversal(directed) == [0, 1, 2, 4, 5, 3]
-        dfs.iterativeTraversal(directed) == [0, 1, 2, 4, 5, 3]
+        dfs.recursive(directed)[DISCOVERED] == [0, 1, 2, 4, 5, 3]
+        dfs.recursive(directed)[PROCESSED] == [5, 4, 2, 1, 3, 0]
+
+        dfs.iterative(directed)[DISCOVERED] == [0, 1, 2, 4, 5, 3]
+        dfs.iterative(directed)[PROCESSED] == [5, 4, 2, 1, 3, 0]
+
+        dfs.iterative2(directed)[DISCOVERED] == [0, 1, 3, 2, 4, 5]
     }
 
-    def "traverse unconnected graph using dfs"() {
+    def "traverse not connected graph using dfs"() {
         given:
         def unconnected = new Graph((int[][]) [[1, 3], [0, 2, 3], [1, 3], [0, 1, 2], [5], [4]])
         expect:
-        dfs.recursiveTraversal(unconnected) == [0, 1, 2, 3, 4, 5]
-        dfs.iterativeTraversal(unconnected) == [0, 1, 2, 3, 4, 5]
+        dfs.recursive(unconnected)[DISCOVERED] == [0, 1, 2, 3, 4, 5]
+        dfs.recursive(unconnected)[PROCESSED] == [3, 2, 1, 0, 5, 4]
+
+        dfs.iterative(unconnected)[DISCOVERED] == [0, 1, 2, 3, 4, 5]
+        dfs.iterative(unconnected)[PROCESSED] == [3, 2, 1, 0, 5, 4]
+
+        dfs.iterative2(unconnected)[DISCOVERED] == [0, 1, 3, 2, 4, 5]
     }
 }

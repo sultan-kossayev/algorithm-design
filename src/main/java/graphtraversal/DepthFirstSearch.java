@@ -11,110 +11,162 @@ import java.util.List;
  * Two implementations of depth-first search on a graph:
  * 1) recursive. Time O(V+E), Space O(V)
  * 2) iterative. Time O(V+E), Space O(V)
- *
- * Both implementations return a list of vertices in order that they have been discovered
  */
 public class DepthFirstSearch {
 
     /**
-     * Recursive approach
+     * Couple of definitions that would help to understand below algorithms:
+     * - Visiting a vertex means processing it and discovering all its adjacent (undiscovered) vertices
+     * - A vertex is considered discovered when it has been found the first time.
+     * - A vertex is considered processed when it and all its adjacent vertices have been visited.
      */
-    public List<Integer> recursiveTraversal(Graph g) {
+
+
+    /**
+     * Recursive approach
+     *
+     * Returns two list of vertices in order in which they were discovered and processed
+     */
+    public List[] recursive(Graph g) {
         boolean[] discovered = new boolean[g.numberOfVertices()];
 
-        List<Integer> res = new ArrayList<>(); // keeps vertices in discovered
+        List<Integer> discoveredList = new ArrayList<>();
+        List<Integer> processedList = new ArrayList<>();
 
         for (int v : g.vertices()) {
             if (!discovered[v]) {
+
                 // discover the vertex v
                 discovered[v] = true;
-                res.add(v);
-                // go and process the vertex v
-                recursive(g, v, discovered, res);
+                discoveredList.add(v);
+
+                // visit the vertex v
+                visitVertex(g, v, discovered, discoveredList, processedList);
             }
         }
 
-        return res;
+        return new List[]{discoveredList, processedList};
     }
 
-    private void recursive(Graph g, int v, boolean[] discovered, List<Integer> res) {
+    private void visitVertex(Graph g, int v, boolean[] seen, List<Integer> discovered, List<Integer> processed) {
         // process the vertex v early
-        res.add(v);
 
         for (int u : g.adj(v)) {
-            if (!discovered[u]) {
+            if (!seen[u]) {
                 // process (v,u) edge
 
-                // discover the vertex v
-                discovered[u] = true;
+                // discover the vertex u
+                seen[u] = true;
+                discovered.add(u);
 
-                // go and process the vertex u
-                recursive(g, u, discovered, res);
+                // visit the vertex u
+                visitVertex(g, u, seen, discovered, processed);
             }
             // else if the vertex u is not processed OR the graph is directed then also process (v, u) edge
         }
 
         // process the vertex v late
-        // mark the vertex v as processed
+        processed.add(v);
     }
 
     /**
-     * Iterative approach using stack.
+     * First iterative approach. It yields the same results as the recursive approach above
      *
-     * Note, there is an another way to implement iterative algorithm using stack
-     * where we allow the stack to contain duplicate values. However, with that approach it is not easy
-     * to process the vertex after all its adjacent vertices have been processed.
+     * Returns two list of vertices in order in which they were discovered and processed.
      */
-    public List<Integer> iterativeTraversal(Graph g) {
+    public List[] iterative(Graph g) {
         boolean[] discovered = new boolean[g.numberOfVertices()];
 
-        List<Integer> res = new ArrayList<>(); // this is only needed for test cases
-
-        Deque<Integer> stack = new LinkedList<>();
+        List<Integer> discoveredList = new ArrayList<>();
+        List<Integer> processedList = new ArrayList<>();
 
         for (int x : g.vertices()) {
             if (!discovered[x]) {
-                // discover the vertex x
-                discovered[x] = true;
 
-                // go and process the vertex x
+                Deque<Integer> stack = new LinkedList<>();
                 stack.push(x);
 
                 while (!stack.isEmpty()) {
+                    // visit the vertex v
                     int v = stack.peek();
 
                     if (!discovered[v]) {
                         // process the vertex v early
-                        res.add(v);
+
+                        // discover the vertex v
+                        discovered[v] = true;
+                        discoveredList.add(v);
                     }
 
-                    boolean allAdjacentProcessed = true;
+                    // are all adjacent vertices visited?
+                    boolean allVisited = true;
                     for (int u : g.adj(v)) {
                         if (!discovered[u]) {
                             // process the edge (v, u)
 
-                            // discover the vertex v
-                            discovered[v] = true;
-
-                            // go and process  the vertex u
+                            // visit the vertex u
                             stack.push(u);
 
-                            allAdjacentProcessed = false;
+                            allVisited = false;
                             break;
                         }
                         // else if the vertex u is not processed OR the graph is directed then also process the edge (v, u)
                     }
 
-                    if (allAdjacentProcessed) {
-                        // process the vertex v late
+                    if (allVisited) {
 
-                        // mark the vertex as processed
-                        stack.pop();
+                        // process the vertex v late
+                        v = stack.pop();
+                        processedList.add(v);
                     }
                 }
             }
         }
 
-        return res;
+        return new List[]{discoveredList, processedList};
+    }
+
+
+    /**
+     * Second iterative approach.
+     * This approach is not suitable for tracking of when a vertex is considered processed.
+     * <p>
+     * Also, it doesn't produce the same discovered ordering as the above recursive and iterative approaches.
+     * <p>
+     * Returns only a list of vertices in order in which they were discovered
+     */
+    public List[] iterative2(Graph g) {
+        boolean[] discovered = new boolean[g.numberOfVertices()];
+        List<Integer> discoveredList = new ArrayList<>();
+
+        for (int x : g.vertices()) {
+            if (!discovered[x]) {
+                // discover the vertex x
+                discovered[x] = true;
+                discoveredList.add(x);
+
+                Deque<Integer> stack = new LinkedList<>();
+                stack.push(x);
+
+                while (!stack.isEmpty()) {
+
+                    // visit the vertex x
+                    int v = stack.pop();
+
+                    for (int u : g.adj(v)) {
+                        if (!discovered[u]) {
+
+                            stack.push(u);
+
+                            // discover the vertex u
+                            discovered[u] = true;
+                            discoveredList.add(u);
+                        }
+                    }
+                }
+            }
+        }
+
+        return new List[]{discoveredList};
     }
 }
