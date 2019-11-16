@@ -7,10 +7,10 @@ import utils.Graph
 class DepthFirstSearchSpec extends Specification {
 
     // vertices in discovered order
-    static DISCOVERED = 0
+    static final DISCOVERED = 0
 
     // vertices in processed order
-    static PROCESSED = 1
+    static final PROCESSED = 1
 
     @Subject
     def dfs = new DepthFirstSearch()
