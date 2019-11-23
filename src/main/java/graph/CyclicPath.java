@@ -1,17 +1,31 @@
 package graph;
 
+import utils.Graph;
+
 import java.util.*;
 
+/**
+ * Finds a cycle in a simple undirected graph
+ * If the graph has multiple cycle, only the first found will be returned
+ * <p>
+ * Time: O(E+V), Space: O(V)
+ */
 public class CyclicPath {
 
-
-
-    public List<Integer> find(utils.Graph g) {
+    /**
+     * The below logic is a standard dfs iterative implementation.
+     * Inline comments show lines that are key for finding the cyclic path.
+     */
+    public List<Integer> find(Graph g) {
+        // the map stores vertex and its parent that discovered it
         // key - vertex, value - parent
         Map<Integer, Integer> seen = new HashMap<>();
-        Integer first = null;
+
+        // the last vertex that closes the cycle
+        Integer last = null;
         for(int x : g.vertices()) {
-            if (first != null) {
+            // once a cycle is found, we can stop the search
+            if (last != null) {
                 break;
             }
             if (!seen.containsKey(x)) {
@@ -20,7 +34,8 @@ public class CyclicPath {
                 Deque<Integer> stack = new LinkedList<>();
                 stack.push(x);
                 while(!stack.isEmpty()) {
-                    if (first != null) {
+                    // once a cycle is found, we can stop the search
+                    if (last != null) {
                         break;
                     }
 
@@ -34,7 +49,9 @@ public class CyclicPath {
                             processed = false;
                             break;
                         } else if (seen.get(v) != u) {
-                            first = v;
+
+                            // the cycle is found
+                            last = v;
                             break;
                         }
                     }
@@ -46,10 +63,10 @@ public class CyclicPath {
             }
         }
 
-
-        if (first != null) {
+        if (last != null) {
             Deque<Integer> path = new LinkedList<>();
-            for (Integer v = first; v != seen.get(v); v = seen.get(v)) {
+            // the path is constructed going backward
+            for (Integer v = last; v != seen.get(v); v = seen.get(v)) {
                 path.push(v);
             }
 

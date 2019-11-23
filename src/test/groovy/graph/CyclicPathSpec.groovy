@@ -9,7 +9,7 @@ class CyclicPathSpec extends Specification {
     @Subject
     def cp = new CyclicPath()
 
-    def "get cyclic path of a simple undirected graph"() {
+    def "get a cyclic path in a simple undirected graph"() {
         given:
         def g = new Graph((int[][])[[1], [0, 2, 4], [1, 3], [2, 4], [1, 3]])
         expect:
