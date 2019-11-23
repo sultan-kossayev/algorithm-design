@@ -84,25 +84,25 @@ public class DepthFirstSearch {
             if (!discovered[x]) {
 
                 Deque<Integer> stack = new LinkedList<>();
+                // visit the vertex v
                 stack.push(x);
 
+                // discover the vertex x
+                discovered[x] = true;
+                discoveredList.add(x);
+
                 while (!stack.isEmpty()) {
-                    // visit the vertex v
                     int v = stack.peek();
-
-                    if (!discovered[v]) {
-                        // process the vertex v early
-
-                        // discover the vertex v
-                        discovered[v] = true;
-                        discoveredList.add(v);
-                    }
 
                     // are all adjacent vertices visited?
                     boolean allVisited = true;
                     for (int u : g.adj(v)) {
                         if (!discovered[u]) {
                             // process the edge (v, u)
+
+                            // discover the vertex u
+                            discovered[u] = true;
+                            discoveredList.add(u);
 
                             // visit the vertex u
                             stack.push(u);
