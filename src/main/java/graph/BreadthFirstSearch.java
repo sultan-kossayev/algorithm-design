@@ -39,9 +39,10 @@ public class BreadthFirstSearch {
                 int v = q.poll();
 
                 for (int u : g.adj(v)) {
-                    if (!discovered[u]) {
-                        // process the edge (v, u)
+                    // if u is not processed yet or the graph is directed then process the edge (v, u)
 
+
+                    if (!discovered[u]) {
                         // discover the vertex u
                         discovered[u] = true;
                         discoveredList.add(u);
@@ -49,7 +50,6 @@ public class BreadthFirstSearch {
                         // visit the vertex u
                         q.offer(u);
                     }
-                    // if else u is not processed yet or the graph is directed then process the edge (v, u)
                 }
             }
         }

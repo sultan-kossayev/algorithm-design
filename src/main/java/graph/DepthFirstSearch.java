@@ -62,7 +62,8 @@ public class DepthFirstSearch {
                 // visit the vertex u
                 visitVertex(g, u, seen, discovered, processed);
             }
-            // else if the vertex u is not processed OR the graph is directed then also process (v, u) edge
+            // else if (the vertex u is not processed AND u is not parent of v)
+            //      OR the graph is directed then also process (v, u) edge
         }
 
         // process the vertex v late
@@ -110,7 +111,8 @@ public class DepthFirstSearch {
                             allVisited = false;
                             break;
                         }
-                        // else if the vertex u is not processed OR the graph is directed then also process the edge (v, u)
+                        // else if (the vertex u is not processed AND u is not parent of v)
+                        //      OR the graph is directed then also process (v, u) edge
                     }
 
                     if (allVisited) {
