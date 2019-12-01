@@ -11,8 +11,15 @@ import java.util.List;
  * recursive dfs
  * <p>
  * Time: O(V + E), Space: O(V)
+ *
+ * Useful resources:
+ * 1) https://www.youtube.com/watch?v=aZXi1unBdJA gives a nice overview of articulation points
+ * 2) https://www.hackerearth.com/practice/algorithms/graphs/articulation-points-and-bridges/tutorial/ explains
+ * the intuition behind the algorithm explained in the above video
  */
 public class Bridges {
+
+    private int currentTime = 0;
 
     /**
      * Backward edges are keys to find bridges in a graph, because backward edge always form a cycle in graph
@@ -39,57 +46,53 @@ public class Bridges {
      */
     public List<List<Integer>> find(Graph g) {
         int V = g.numberOfVertices();
-        boolean[] discovered = new boolean[V];
-        boolean[] processed = new boolean[V];
 
-        int[] discoveredTime = new int[V];
-        int[] reachableAncestor = new int[V];
+        // discovery time of a vertex. Zero value means a vertex hasn't been discovered yet
+        int[] discoveryTime = new int[V];
+        // earliest ancestor that is reachable by a vertex. By default, that ancestor is a vertex itself
+        int[] ancestor = new int[V];
 
         List<List<Integer>> bridges = new ArrayList<>();
 
-        int time = 0;
         for (int u : g.vertices()) {
-            if (!discovered[u]) {
+            if (discoveryTime[u] == 0) {
                 // initial values for the discovery time and reachable ancestor
-                reachableAncestor[u] = discoveredTime[u] = time++;
-                discovered[u] = true;
+                ancestor[u] = discoveryTime[u] = ++currentTime;
 
-                visitVertex(g, u, -1, time, reachableAncestor, discoveredTime, discovered, processed, bridges);
+                visitVertex(g, u, -1, ancestor, discoveryTime, bridges);
             }
         }
 
         return bridges;
     }
 
-    private void visitVertex(Graph g, int u, int parent, int time, int[] reachableAncestor, int[] discoveredTime,
-                             boolean[] discovered, boolean[] processed, List<List<Integer>> bridges) {
+    private void visitVertex(Graph g, int u, int parent, int[] ancestor, int[] discoveryTime,
+                             List<List<Integer>> bridges) {
         for (int v : g.adj(u)) {
-            // skip a vertex where we came from
+
+            // skip a vertex that discovered u
             if (v == parent) {
                 continue;
             }
 
-            if (!discovered[v]) {
+            if (discoveryTime[v] == 0) {
                 // initial values for the discovery time and reachable ancestor
-                reachableAncestor[v] = discoveredTime[v] = time++;
-                discovered[v] = true;
+                ancestor[v] = discoveryTime[v] = ++currentTime;
 
-                visitVertex(g, v, u, time, reachableAncestor, discoveredTime, discovered, processed, bridges);
+                visitVertex(g, v, u, ancestor, discoveryTime, bridges);
 
                 // update reachable ancestor using a tree edge (u, v)
-                reachableAncestor[u] = Math.min(reachableAncestor[u], reachableAncestor[v]);
+                ancestor[u] = Math.min(ancestor[u], ancestor[v]);
 
-                if (discoveredTime[u] < reachableAncestor[v]) {
+                if (discoveryTime[u] < ancestor[v]) {
                     bridges.add(Arrays.asList(u, v));
                 }
-            } else if (!processed[v]) {
+            } else {
                 // update reachable ancestor using a backward edge (u,v).
                 // We are using discovery time of v because we are allowed to use at most one backward edge in a chain
-                reachableAncestor[u] = Math.min(reachableAncestor[u], discoveredTime[v]);
+                ancestor[u] = Math.min(ancestor[u], discoveryTime[v]);
             }
         }
-
-        processed[u] = true;
     }
 
 }
