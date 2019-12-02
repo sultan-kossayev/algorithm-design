@@ -11,7 +11,7 @@ class ArticulationPointsSpec extends Specification {
 
     def "test a one vertex graph"() {
         given:
-        def g = new Graph((int[][]) [[0]])
+        def g = new Graph((int[][]) [[]])
         expect:
         ap.find(g) == []
     }
