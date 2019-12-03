@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Arrays;
+
 public class Graph {
     private int[] vertices;
     private int[][] edges;
@@ -22,5 +24,22 @@ public class Graph {
 
     public int[] vertices() {
         return vertices;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder list = new StringBuilder();
+        list.append("[");
+        for (int[] e : edges) {
+            list.append(Arrays.toString(e)).append(",");
+        }
+
+        if (list.length() > 1) {
+            list.deleteCharAt(list.length() - 1);
+        }
+
+        list.append("]");
+
+        return list.toString();
     }
 }

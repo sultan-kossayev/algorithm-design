@@ -1,29 +1,32 @@
 package graph
 
 import spock.lang.Specification
-import spock.lang.Subject
+import spock.lang.Unroll
 import utils.Graph
 
 class CycleDetectionSpec extends Specification {
 
-    @Subject
-    def cd = new CycleDetection()
-
-    def "detect a cycle in cyclic undirected graph"() {
-        given:
-        def connected = new Graph((int[][]) [[1], [0, 2, 3], [1, 3], [1, 2]])
-        def disconnected = new Graph((int[][]) [[1], [0, 2], [1], [4, 5], [3, 5], [3, 4]])
-        expect:
-        cd.hasCycle(connected)
-        cd.hasCycle(disconnected)
+    @Unroll
+    def "detect a cycle in an undirected graph #g"(boolean cyclic, Graph g) {
+        when:
+        def cd = new CycleDetection(g)
+        then:
+        cd.hasCycle() == cyclic
+        where:
+        cyclic | g
+        true   | new Graph((int[][]) [[1], [0, 2, 3], [1, 3], [1, 2]])
+        false  | new Graph((int[][]) [[1], [0, 2, 3], [1], [1]])
     }
 
-    def "detect a cycle in noncyclic undirected graph"() {
-        given:
-        def connected = new Graph((int[][]) [[1], [0, 2, 3], [1], [1]])
-        def disconnected = new Graph((int[][]) [[1], [0, 2], [1], [4], [3, 5], [4]])
-        expect:
-        !cd.hasCycle(connected)
-        !cd.hasCycle(disconnected)
+    @Unroll
+    def "detect a cycle in a directed graph #g"(boolean cyclic, Graph g) {
+        when:
+        def cd = new CycleDetection(g)
+        then:
+        cd.hasCycle() == cyclic
+        where:
+        cyclic | g
+        true   | new Graph((int[][]) [[1], [2], [0]])
+        false  | new Graph((int[][]) [[1, 2], [2], []])
     }
 }
