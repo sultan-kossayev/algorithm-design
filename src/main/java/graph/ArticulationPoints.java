@@ -6,90 +6,97 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Finds articulation points in a graph
+ * Finds articulation points in a given graph
+ *
  * Time O(V + E), space O(V)
- * <p>
- * The logic to find articulation points aka cut nodes is similar to what is described in {@link Bridges}.
- * <p>
- * There are 3 types of cut nodes: root, bridge, and parent
- * - root cut node is a vertex that is the root of the dfs tree and it has out-degree greater than 1
- * - bridge cut node is u vertex in (u, v) edge where the discovery time of u vertex is less
- * than the discovery time of an ancestor that v is able to reach
- * - parent cut node is u vertex in (u, v) edge where the discovery time of u vertex is equal to
- * the discovery time of an ancestor that v is able to reach
- * <p>
- * Useful resources:
- * 1) https://www.youtube.com/watch?v=aZXi1unBdJA gives a nice overview of articulation points
- * 2) Skiena's book on page 176 describes 3 types of articulation points
- * 3) https://www.hackerearth.com/practice/algorithms/graphs/articulation-points-and-bridges/tutorial/ explains
- * the intuition behind the algorithm explained in the above video
  */
 public class ArticulationPoints {
 
-    // every time when a vertex is discovered, this counter gets incremented
-    // it should be global to keep track the time for the whole graph
+    // articulation points
+    private List<Integer> cutNodes;
+
+    // the discovery time of a vertex.
+    // By default contains all zeros which means that a vertex hasn't been discovered yet
+    private int[] discoveryTime;
+
+    // the earliest ancestor that is reachable by a vertex. By default, the earliest ancestor is a vertex itself
+    private int[] ancestor;
+
+    // every time when a vertex is discovered, this counter gets simply incremented
     private int currentTime = 0;
 
-    // the number of outgoing edges that the root of the dfs tree has
+    // the number of outgoing edges that the root of the dfs tree (not graph!) has
     private int rootOutDegree = 0;
 
-    public List<Integer> find(Graph g) {
+    public ArticulationPoints(Graph g) {
         int V = g.numberOfVertices();
 
-        // discovery time of a vertex. Zero value means a vertex hasn't been discovered yet
-        int[] discoveryTime = new int[V];
-        // earliest ancestor that is reachable by a vertex. By default, that ancestor is a vertex itself
-        int[] ancestor = new int[V];
+        cutNodes = new ArrayList<>(V);
+        discoveryTime = new int[V];
+        ancestor = new int[V];
 
-        // articulation points
-        List<Integer> cutNodes = new ArrayList<>();
+        dfs(g);
+    }
 
+    private void dfs(Graph g) {
         for (int u : g.vertices()) {
             if (discoveryTime[u] == 0) {
-                discoveryTime[u] = ancestor[u] = ++currentTime;
+
                 rootOutDegree = 0;
-                visitVertex(g, u, -1, u, discoveryTime, ancestor, cutNodes);
+
+                visitVertex(g, u, -1, u);
+
                 if (rootOutDegree > 1) {
                     // u is a root cut-node
                     cutNodes.add(u);
                 }
             }
         }
-
-        return cutNodes;
     }
 
-    private void visitVertex(Graph g, int u, int parent, int root, int[] discoveryTime, int[] ancestor,
-                             List<Integer> cutNodes) {
+    private void visitVertex(Graph g, int u, int parent, int root) {
+        // set ancestor and discovery time of u
+        ancestor[u] = discoveryTime[u] = ++currentTime;
 
-        // u is a direct child of the root in the dfs tree
+        // check whether u is a direct child of the root in the dfs tree
         if (parent == root) {
             ++rootOutDegree;
         }
 
         for (int v : g.adj(u)) {
-            // skip a vertex that discovered u
+            // skip a vertex that discovered u before
+            // this is relevant only for undirected graphs
             if (v == parent) {
                 continue;
             }
 
             if (discoveryTime[v] == 0) {
-                ancestor[v] = discoveryTime[v] = ++currentTime;
 
-                visitVertex(g, v, u, root, discoveryTime, ancestor, cutNodes);
+                // set ancestor and discovery time of v
+                visitVertex(g, v, u, root);
 
-                /** logic is the same as in {@link Bridges} */
+                // update the ancestor that is reachable by u
+                // this makes sense if v can reach the ancestors of
                 ancestor[u] = Math.min(ancestor[u], ancestor[v]);
 
-                // u is a bridge cut-node OR u is a parent cut-node. Also u can't be a root cut-node
+                // u is a bridge cut-node if v can't reach the ancestors of u
+                // u is a parent cut-node if v can only reach u itself and not ancestors of u
+                // u can't be a root and at the same time bridge or parent cut-node
                 if (root != u && (discoveryTime[u] < ancestor[v] || discoveryTime[u] == ancestor[v])) {
                     cutNodes.add(u);
                 }
+
             } else {
-                /** logic is the same as in {@link Bridges } */
+                // this is a case when (u, v) is backward edge
+                // thus we should try to update reachable ancestor of u
+                // we must use v's discovery time and not v's ancestor because we can use only 1 backward edge at a time
                 ancestor[u] = Math.min(ancestor[u], discoveryTime[v]);
             }
         }
+    }
+
+    public List<Integer> points() {
+        return cutNodes;
     }
 }
 
