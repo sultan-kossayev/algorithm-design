@@ -1,98 +1,86 @@
 package graph;
 
+import utils.Edge;
 import utils.Graph;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * Finds bridges or cut-edges in a simple undirected graph using
- * recursive dfs
- * <p>
- * Time: O(V + E), Space: O(V)
+ * Finds bridges in a given graph
  *
- * Useful resources:
- * 1) https://www.youtube.com/watch?v=aZXi1unBdJA gives a nice overview of articulation points
- * 2) https://www.hackerearth.com/practice/algorithms/graphs/articulation-points-and-bridges/tutorial/ explains
- * the intuition behind the algorithm explained in the above video
+ * Time: O(V + E), Space: O(V)
  */
 public class Bridges {
 
+    // bridges aka cut-edges
+    private List<Edge> bridges;
+
+    // the discovery time of a vertex.
+    // By default contains all zeros which means that a vertex hasn't been discovered yet
+    private int[] discoveryTime;
+
+    // the earliest ancestor that is reachable by a vertex. By default, the earliest ancestor is a vertex itself
+    private int[] ancestor;
+
+    // every time when a vertex is discovered, this counter gets simply incremented
     private int currentTime = 0;
 
-    /**
-     * Backward edges are keys to find bridges in a graph, because backward edge always form a cycle in graph
-     * and a bridge is viewed as an edge that is not part of a cycle.
-     * <p>
-     * The more formal definition of a bridge is:
-     * an edge (u, v) is a bridge/cut-edge if none of the descendants of v including v itself
-     * have a backward edge to u and u's ancestors. It means that there is no other way to get from u to v except edge (u, v)
-     * <p>
-     * The logic below keeps track of two variables:
-     * 1) the discovery time of a vertex u
-     * 2) ancestor of vertex u that is reachable from u either by tree or backward edges.
-     * <p>
-     * Initially, when a vertex u is discovered it gets a discovery time and a reachable ancestor values. The latter is equal to
-     * its discovery time.
-     * As dfs progresses, whenever we see that a vertex u can reach its ancestor using tree or backward edge
-     * we update reachable ancestor for vertex u.
-     * Due to this logic, if descendants of u have a backward edge to u then they will have reachable ancestor equal to u
-     * (because they can reach u using a backward edge)
-     * <p>
-     * Thus, it means that an edge (u, v) is a bridge if only if the discovery time of u is less than reachable ancestor of v,
-     * because this condition will be true only if v and its descendants don't have a backward edge to u which is a must
-     * for considering an edge "non-bridge"
-     */
-    public List<List<Integer>> find(Graph g) {
+
+    public Bridges(Graph g) {
         int V = g.numberOfVertices();
 
-        // discovery time of a vertex. Zero value means a vertex hasn't been discovered yet
-        int[] discoveryTime = new int[V];
-        // earliest ancestor that is reachable by a vertex. By default, that ancestor is a vertex itself
-        int[] ancestor = new int[V];
+        bridges = new ArrayList<>(V);
+        discoveryTime = new int[V];
+        ancestor = new int[V];
 
-        List<List<Integer>> bridges = new ArrayList<>();
-
-        for (int u : g.vertices()) {
-            if (discoveryTime[u] == 0) {
-                // initial values for the discovery time and reachable ancestor
-                ancestor[u] = discoveryTime[u] = ++currentTime;
-
-                visitVertex(g, u, -1, ancestor, discoveryTime, bridges);
-            }
-        }
-
-        return bridges;
+        dfs(g);
     }
 
-    private void visitVertex(Graph g, int u, int parent, int[] ancestor, int[] discoveryTime,
-                             List<List<Integer>> bridges) {
+    private void dfs(Graph g) {
+        for (int u : g.vertices()) {
+            if (discoveryTime[u] == 0) {
+                visitVertex(g, u, -1);
+            }
+        }
+    }
+
+    private void visitVertex(Graph g, int u, int parent) {
+        // set ancestor and discovery time of u
+        ancestor[u] = discoveryTime[u] = ++currentTime;
+
         for (int v : g.adj(u)) {
 
             // skip a vertex that discovered u
+            // relevant only for undirected graphs
             if (v == parent) {
                 continue;
             }
 
             if (discoveryTime[v] == 0) {
-                // initial values for the discovery time and reachable ancestor
-                ancestor[v] = discoveryTime[v] = ++currentTime;
+                // set ancestor and discovery time of v
+                visitVertex(g, v, u);
 
-                visitVertex(g, v, u, ancestor, discoveryTime, bridges);
-
-                // update reachable ancestor using a tree edge (u, v)
+                // update the ancestor that is reachable by u
+                // this makes sense if v can reach the ancestors of u somewhere along dfs tree
                 ancestor[u] = Math.min(ancestor[u], ancestor[v]);
 
+                // (u, v) is a bridge because v or v's descendants
+                // can't reach u or u's ancestors
                 if (discoveryTime[u] < ancestor[v]) {
-                    bridges.add(Arrays.asList(u, v));
+                    bridges.add(new Edge(u, v));
                 }
             } else {
-                // update reachable ancestor using a backward edge (u,v).
-                // We are using discovery time of v because we are allowed to use at most one backward edge in a chain
+                // this is a case when (u, v) is backward edge
+                // thus we should try to update reachable ancestor of u
+                // we are using discovery time of v and not v's ancestor because we are allowed
+                // to use at most one backward edge in a chain
                 ancestor[u] = Math.min(ancestor[u], discoveryTime[v]);
             }
         }
     }
 
+    public List<Edge> bridges() {
+        return bridges;
+    }
 }
