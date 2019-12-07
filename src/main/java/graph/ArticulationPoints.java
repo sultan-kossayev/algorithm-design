@@ -76,7 +76,7 @@ public class ArticulationPoints {
                 visitVertex(g, v, u, root);
 
                 // update the ancestor that is reachable by u
-                // this makes sense if v can reach the ancestors of
+                // this makes sense if v can reach the ancestors of u somewhere along dfs tree
                 ancestor[u] = Math.min(ancestor[u], ancestor[v]);
 
                 // u is a bridge cut-node if v can't reach the ancestors of u
@@ -89,7 +89,8 @@ public class ArticulationPoints {
             } else {
                 // this is a case when (u, v) is backward edge
                 // thus we should try to update reachable ancestor of u
-                // we must use v's discovery time and not v's ancestor because we can use only 1 backward edge at a time
+                // We are using discovery time of v and not v's ancestor because we are allowed
+                // to use at most one backward edge in a chain
                 ancestor[u] = Math.min(ancestor[u], discoveryTime[v]);
             }
         }
