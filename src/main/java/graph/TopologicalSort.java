@@ -9,20 +9,26 @@ import java.util.List;
 
 /**
  * Finds topological ordering in a directed acyclic graph
- * <p>
+ *
  * Time O(E + V), space O(V)
  */
 public class TopologicalSort {
 
+    // topological order
     private Deque<Integer> order;
+
+    // discovered vertices
     private boolean[] discovered;
+
+    // processed vertices
     private boolean[] processed;
 
     public TopologicalSort(Graph g) {
         int V = g.numberOfVertices();
-        discovered = new boolean[V];
 
+        discovered = new boolean[V];
         processed = new boolean[V];
+
         order = new LinkedList<>();
 
         for (int u : g.vertices()) {
@@ -39,13 +45,14 @@ public class TopologicalSort {
             if (!discovered[v]) {
                 visitVertex(g, v);
             } else if (!processed[v]) {
-                throw new IllegalStateException("The graph is cyclic");
+                // topological sort can't be found in a cyclic graph
+                throw new IllegalStateException("The graph is a cyclic");
             }
         }
 
         processed[u] = true;
 
-        // this is a key for topological ordering
+        // reverse order is a topological sort in DAG
         order.push(u);
     }
 
