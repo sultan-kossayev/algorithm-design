@@ -4,16 +4,18 @@ import utils.Graph;
 
 /**
  * Checks whether a graph is bipartite i.e. two colorable
- * <p>
- * Time O(E + V), Space O(V)
- * <p>
- * Useful resources:
- * 1) 1) Sedgewick's book, page 547
+ *
+ * Time O(E + V), space O(V)
  */
 public class BipartiteGraph {
 
-    private boolean bipartite;
+    // indicates whether a vertex at i index has been discovered or not
     private boolean[] discovered;
+
+    // indicates whether a graph is bipartite
+    private boolean bipartite;
+
+    // stores a color of a vertex at index i
     private boolean[] color;
 
     public BipartiteGraph(Graph g) {
