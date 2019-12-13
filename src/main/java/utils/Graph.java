@@ -1,6 +1,8 @@
 package utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Graph {
     private int[] vertices;
@@ -14,6 +16,15 @@ public class Graph {
         }
     }
 
+    public Graph(List<List<Integer>> edges) {
+        this.vertices = new int[edges.size()];
+        this.edges = new int[edges.size()][];
+        for (int i = 0; i < vertices.length; i++) {
+            vertices[i] = i;
+            this.edges[i] = edges.get(i).stream().mapToInt(e -> e).toArray();
+        }
+    }
+
     public int[] adj(int v) {
         return edges[v];
     }
@@ -24,6 +35,21 @@ public class Graph {
 
     public int[] vertices() {
         return vertices;
+    }
+
+    public Graph reverseCopy() {
+        List<List<Integer>> copy = new ArrayList<>();
+        for (int v : vertices) {
+            copy.add(new ArrayList<>());
+        }
+
+        for (int v : vertices) {
+            for (int e : edges[v]) {
+                copy.get(e).add(v);
+            }
+        }
+
+        return new Graph(copy);
     }
 
     @Override
