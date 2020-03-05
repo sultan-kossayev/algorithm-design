@@ -1,6 +1,7 @@
-###Algorithm problems
+### Algorithm problems
 + Sorting
     - Merge sort
+    - Selection sort
 + Tree traversal
     - In order
     - Level order
