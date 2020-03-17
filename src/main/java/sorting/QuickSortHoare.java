@@ -23,6 +23,13 @@ public class QuickSortHoare<T extends Comparable> implements ArraySort<T> {
         quicksort(array, pivot + 1, hi);
     }
 
+    /**
+     * This method uses two indices that start at the ends of the array being partitioned,
+     * then move toward each other, until they detect an inversion:
+     * a pair of elements, one greater than or equal to the pivot, one lesser or equal,
+     * that are in the wrong order relative to each other. The inverted elements are then swapped.
+     * When the indices meet, the algorithm stops and returns the final index.
+     */
     private int partition(T[] array, int lo, int hi) {
         int pivot = (hi + lo) >>> 1;
 
