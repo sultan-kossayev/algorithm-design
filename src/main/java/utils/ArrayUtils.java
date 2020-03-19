@@ -7,4 +7,10 @@ public class ArrayUtils<T> {
         arr[i] = arr[j];
         arr[j] = temp;
     }
+
+    public static <T> void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
 }
