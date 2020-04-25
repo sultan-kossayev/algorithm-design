@@ -42,7 +42,7 @@ public class KMP {
     private int match(String text, String pattern, int[] lps) {
         int i = 0;
         int j = 0;
-        for (; i < text.length() && j < pattern.length(); ) {
+        while (i < text.length() && j < pattern.length()) {
             if (text.charAt(i) == pattern.charAt(j)) {
                 i++;
                 j++;
